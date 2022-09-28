@@ -1,0 +1,50 @@
+{% include "../header.html" %}
+<a href="/books/new">Check new Address</a>
+<table>
+    <tr>
+        <th>Block Number</th>
+        <th>Time Stamp</th>
+        <th>Hash</th>
+        <th>Nonce</th>
+        <th>Block Hash</th>
+        <th>TRX Index</th>
+        <th>From</th>
+        <th>TO</th>
+        <th>Value</th>
+        <th>Gas</th>
+        <th>Gas Price</th>
+        <th>Is Error</th>
+        <th>TxReceipt Status</th>
+        <th>Input</th>
+        <th>Contract Address</th>
+        <th>Cumulative Gas Used</th>
+        <th>Gas Used</th>
+        <th>Confirmations</th>
+        <th>Method Id</th>
+        <th>Function Name</th>
+{% for book in books.result %}
+    <tr>
+        <td>{{ book.block_number }}</td>
+        <td>{{ book.time_stamp }}</td>
+        <td>{{ book.hash }}</td>
+        <td>{{ book.nonce }}</td>
+        <td>{{ book.block_hash }}</td>
+        <td>{{ book.transaction_index }}</td>
+        <td>{{ book.fromi }}</td>
+        <td>{{ book.tou }}</td>
+        <td>{{ book.value }}</td>
+        <td>{{ book.gas }}</td>
+        <td>{{ book.gas_price }}</td>
+        <td>{{ book.is_error }}</td>
+        <td>{{ book.txreceipt_status }}</td>
+        <td>{{ book.input }}</td>
+        <td>{{ book.contractaddress }}</td>
+        <td>{{ book.cumulative_gas_used }}</td>
+        <td>{{ book.gasused }}</td>
+        <td>{{ book.confirmations }}</td>
+        <td>{{ book.methodid }}</td>
+        <td>{{ book.function_name }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% include "../footer.html" %}
