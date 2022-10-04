@@ -5,10 +5,6 @@ use warp::{http::StatusCode, reply, reply::html, Rejection, Reply};
 
 #[derive(Error, Debug)]
 pub enum Error {
-    #[error("error accessing the database")]
-    DBAccessError,
-    #[error("book not found")]
-    BookNotFoundError,
     #[error("templating error: {0}")]
     TemplateError(#[from] askama::Error),
 }
@@ -33,10 +29,6 @@ pub async fn handle_rejection(err: Rejection) -> std::result::Result<impl Reply,
         message = "Invalid Body";
     } else if let Some(e) = err.find::<Error>() {
         match e {
-            Error::DBAccessError => {
-                code = StatusCode::BAD_REQUEST;
-                message = "there was an error accessing the database";
-            }
             _ => {
                 eprintln!("unhandled application error: {:?}", err);
                 code = StatusCode::INTERNAL_SERVER_ERROR;

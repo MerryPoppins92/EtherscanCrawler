@@ -1,14 +1,16 @@
 {% include "../header.html" %}
-<h2>Add New Book</h2>
+<h2>Type your address and the block start</h2>
 <table>
     <form action="/query/new" method="post">
         <tr>
             <td>Address:</td>
             <td><input type="text" name="address" /></td>
+            <td><span> : 0xaa7a9ca87d3694b5755f213b5d04094b8d0f0a6f</span></td>
         <tr/>
         <tr>
             <td>Block:</td>
             <td><input type="text" name="block" /></td>
+            <td><span> : 9000000</span></td>
         <tr/>
         <tr>
             <td colspan="2"><button type="submit">Send</button></td>

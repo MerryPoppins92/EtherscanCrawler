@@ -1,10 +1,8 @@
 use warp::{reject, reply::html, Reply};
 use askama::Template;
 use serde::{Serialize, Deserialize};
-// use crate::Block;
 use crate::EthSpider;
 use crate::Response;
-// use crate::WelcomeTemplate;
 use crate::{error::Error::*, WebResult};
 
 pub static KEY: &str = "NH5MPZTWMKP3MQZ91KDV862TVYQVNZX52Y";
@@ -20,44 +18,25 @@ pub async fn welcome_handler() -> WebResult<impl Reply> {
     Ok(html(res))
 }
 
-// pub static URL2: &str = "https://api.etherscan.io/api?module=account&action=txlist&address=0xc5102fE9359FD9a28f877a67E36B0F050d81a3CC&startblock=9000000&endblock=last&page=1&offset=10&sort=asc&apikey=NH5MPZTWMKP3MQZ91KDV862TVYQVNZX52Y";
 pub async fn create_book_handler(body: EthRequest) -> WebResult<impl Reply> {
     
-    let url = format!("https://api.etherscan.io/api?module=account&action=txlist&address={}&startblock={}&endblock=last&page=1&offset=10&sort=asc&apikey={}", body.address, body.block, KEY);
-    let url2 = format!("https://api.etherscan.io/api?module=account&action=txlist&address={}&startblock={}&endblock=last&page=1&offset=10&sort=asc&apikey={}", body.address, body.block, KEY);
+    let url = format!("https://api.etherscan.io/api?module=account&action=txlist&address={}&startblock={}&endblock=last&page=1&offset=1000&sort=asc&apikey={}", body.address, body.block, KEY);
 
     let x = EthSpider::new();
     let resp = x.http_client.get(url).send().await;
-    // println!("{:?}", resp);
     let data = resp.unwrap();
-    // println!("\n{:#?}", data);
     let data = data.json::<Response>().await;
     let data = data.unwrap();
-    println!("data {:#?}", data);
-    // let data = format!("{:#?}", data);
+
+    let x = data.result.iter().fold(0, |sum, block| sum + block.value.parse::<u32>().unwrap());
 
     let template = BooklistTemplate {
-        books: &data
+        books: &data,
+        total: &x,
     };
     let res = template.render().map_err(|e| reject::custom(TemplateError(e)))?;
     Ok(html(res))
 }
-
-
-// pub async fn books_list_handler(db: String) -> WebResult<impl Reply> {
-//     let x = EthSpider::new();
-//     let resp = x.http_client.get(db).send().await;
-//     // println!("{:?}", resp);
-//     let data = resp.unwrap();
-//     // println!("\n{:#?}", data);
-//     let data = data.json::<Response>().await;
-//     let data = data.unwrap(); 
-//     let template = BooklistTemplate {
-//         books: &data.result
-//     };
-//     let res = template.render().map_err(|e| reject::custom(TemplateError(e)))?; 
-//     Ok(html(res)) 
-// }
 
 pub async fn new_book_handler() -> WebResult<impl Reply> {
     let template = NewEthTemplate {};
@@ -88,4 +67,5 @@ pub struct EthRequest {
 #[template(path = "book/list.html")]
 struct BooklistTemplate<'a> {
     books: &'a Response,
+    total: &'a u32,
 }
